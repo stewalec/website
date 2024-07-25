@@ -1,0 +1,9 @@
+{{ partial "header.html" . }}
+
+    <h1>{{ .Title | markdownify }}
+        <small>Last Updated: {{ .Lastmod.Format "02 January 2006" }}</small>
+    </h1>
+
+    {{ .Content }}
+
+{{ partial "footer.html" . }}

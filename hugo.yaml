@@ -1,0 +1,66 @@
+baseurl: "https://alecstewart.com/"
+languageCode: "en-us"
+title: "Alec Stewart"
+theme: "hugo-sleek"
+footnotereturnlinkcontents: "↩"
+
+taxonomies:
+  tag: "tags"
+
+# Remove .xml extension from RSS file
+mediaTypes:
+  application/customrss:
+    suffix: ""
+    delimiter: ""
+
+outputFormats:
+  RSS:
+    mediatype: "application/customrss"
+    baseName: "rss"
+
+permalinks:
+  articles: "/articles/:slug/"
+
+menu:
+  main:
+    - name: About
+      url: "about/"
+      weight: 2
+    - name: Now
+      url: "now/"
+      weight: 3
+    - name: Articles
+      url: "articles/"
+      weight: 4
+    - name: Notes
+      url: "notes/"
+      weight: 5
+    - name: Contact
+      url: "contact/"
+      weight: 6
+  footer:
+    - name: RSS
+      url: "rss"
+
+params:
+  contentLicense: "[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)"
+
+markup:
+  highlight:
+    codeFences: false
+  goldmark:
+    renderer:
+      unsafe: true
+    extensions:
+      passthrough:
+        enable: true
+        delimiters:
+          block:
+          - - \[
+            - \]
+          - - $$
+            - $$
+          inline:
+          - - \(
+            - \)
+

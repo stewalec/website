@@ -1,0 +1,3 @@
+[submodule "themes/hugo-sleek"]
+	path = themes/hugo-sleek
+	url = https://codeberg.org/stewalec/hugo-sleek.git
