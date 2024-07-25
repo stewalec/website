@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Home on Alec Stewart</title>
+    <link>https://alecstewart.com/</link>
+    <description>Recent content in Home on Alec Stewart</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 24 Jul 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://alecstewart.com/rss" rel="self" type="application/customrss" />
+    <item>
+      <title>Now</title>
+      <link>https://alecstewart.com/now/</link>
+      <pubDate>Wed, 24 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>https://alecstewart.com/now/</guid>
+      <description>Coming soon!</description>
+    </item>
+    <item>
+      <title>About</title>
+      <link>https://alecstewart.com/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://alecstewart.com/about/</guid>
+      <description>Coming soon!</description>
+    </item>
+    <item>
+      <title>Contact</title>
+      <link>https://alecstewart.com/contact/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://alecstewart.com/contact/</guid>
+      <description>Coming soon!</description>
+    </item>
+  </channel>
+</rss>
