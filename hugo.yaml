@@ -18,8 +18,14 @@ outputFormats:
     mediatype: "application/customrss"
     baseName: "rss"
 
+outputs:
+  home: 'html'
+  term: 'html'
+  taxonomy: 'html'
+
 permalinks:
   articles: "/articles/:slug/"
+  notes: "/notes/:slug/"
 
 menu:
   main:
@@ -39,8 +45,10 @@ menu:
       url: "contact/"
       weight: 6
   footer:
-    - name: RSS
-      url: "rss"
+    - name: RSS (Articles)
+      url: "articles/rss"
+    - name: RSS (Notes)
+      url: "notes/rss"
 
 params:
   contentLicense: "[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)"
