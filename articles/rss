@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Articles on Alec Stewart</title>
+    <link>https://alecstewart.com/articles/</link>
+    <description>Recent content in Articles on Alec Stewart</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 29 Jul 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://alecstewart.com/articles/rss" rel="self" type="application/customrss" />
+    <item>
+      <title>Hello World</title>
+      <link>https://alecstewart.com/articles/hello-world/</link>
+      <pubDate>Mon, 29 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>https://alecstewart.com/articles/hello-world/</guid>
+      <description>Hello world! There&amp;rsquo;s not much to see here, at least not yet.</description>
+    </item>
+  </channel>
+</rss>
