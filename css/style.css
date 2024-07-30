@@ -8,6 +8,7 @@ body {
   margin: auto;
   padding: 1em;
   line-height: 1.5;
+  font-size: 1.25rem;
 }
 body > footer {
   position: sticky;
@@ -19,18 +20,25 @@ a:visited, a:hover { color: #f4511e; }
   font-weight: bold;
   text-transform: uppercase;
 }
+.site-title { margin: 0; }
 .site-title a, .site-title a:visited { text-decoration: none; }
 
 /* header and footer areas */
-.menu { padding: 0; }
-.menu li { display: inline-block; }
-.menu a { padding: 5px; }
+.menu {
+  padding: 0;
+  margin-top: 0;
+}
+.menu li {
+  display: inline-block;
+  margin-left: 20px;
+}
+.menu li:first-child { margin-left: 0; }
 h1 small, li small {
   display: block;
   font-size: 0.8rem;
   color: #666;
 }
-.menu, footer { text-align: center; }
+footer { text-align: center; }
 hr {
   border-style: dashed;
   color: #ddd;
