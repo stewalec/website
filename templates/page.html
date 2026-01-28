@@ -1,0 +1,10 @@
+{{template "base" .}}
+
+{{define "title"}}{{.Page.Title}}{{end}}
+
+{{define "content"}}
+<article>
+    <h1>{{.Page.Title}}</h1>
+    <div>{{.Page.HTMLContent}}</div>
+</article>
+{{end}}

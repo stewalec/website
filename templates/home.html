@@ -1,0 +1,21 @@
+{{template "base" .}}
+
+{{define "title"}}Home{{end}}
+
+{{define "content"}}
+<h2>Recent Articles</h2>
+
+{{if .Posts}}
+    {{range .Posts}}
+    <ul class="blog-posts">
+        <li>
+            <span><time>{{.CreatedAt.Format "Jan 2, 2006"}}</time></span>
+            <a href="/{{.PostType}}s/{{.Slug}}">{{.Title}}</a>
+        </li>
+    </ul>
+    {{end}}
+    <a href="/archive">See more posts</a>
+{{else}}
+    <p>No posts yet.</p>
+{{end}}
+{{end}}

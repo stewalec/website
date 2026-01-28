@@ -1,0 +1,51 @@
+{{template "admin_base" .}}
+
+{{define "admin_title"}}{{if .Post}}Edit Post{{else}}New Post{{end}}{{end}}
+
+{{define "admin_content"}}
+<h2>{{if .Post}}Edit Post{{else}}New Post{{end}}</h2>
+
+<form method="POST">
+    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+    
+    <div class="form-group">
+        <label for="title"><span class="red">*</span>Title:</label>
+        <input type="text" id="title" name="title" value="{{if .Post}}{{.Post.Title}}{{end}}" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="slug"><span class="red">*</span>Slug:</label>
+        <input type="text" id="slug" name="slug" value="{{if .Post}}{{.Post.Slug}}{{end}}" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="post_type"><span class="red">*</span>Post Type:</label>
+        <select id="post_type" name="post_type" required>
+            <option value="article" {{if .Post}}{{if eq .Post.PostType "article"}}selected{{end}}{{end}}>Article</option>
+            <option value="note" {{if .Post}}{{if eq .Post.PostType "note"}}selected{{end}}{{end}}>Note</option>
+            <option value="link" {{if .Post}}{{if eq .Post.PostType "link"}}selected{{end}}{{end}}>Link</option>
+            <option value="photo" {{if .Post}}{{if eq .Post.PostType "photo"}}selected{{end}}{{end}}>Photo</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="content">Content (Markdown):</label>
+        <textarea id="content" name="content" rows="20" required>{{if .Post}}{{.Post.Content}}{{end}}</textarea>
+    </div>
+    
+    <div class="form-group">
+        <label for="tags">Tags:</label>
+        <input type="text" id="tags" name="tags" value="{{if .Tags}}{{.Tags}}{{end}}">
+    </div>
+    
+    <div class="form-group">
+        <label for="published">Published:</label>
+        <input type="checkbox" name="published" {{if .Post}}{{if .Post.Published}}checked{{end}}{{end}}>
+    </div>
+    
+    <p>
+        <button type="submit">Save</button>
+        <a href="/admin/posts"><button type="button">Cancel</button></a>
+    </p>
+</form>
+{{end}}

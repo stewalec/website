@@ -1,0 +1,48 @@
+{{template "admin_base" .}}
+
+{{define "admin_title"}}Manage Pages{{end}}
+
+{{define "admin_content"}}
+<h2>Manage Pages</h2>
+
+<p>
+    <a href="/admin/pages/new"><button>New Page</button></a>
+</p>
+
+{{if .Pages}}
+<div class="table-container">
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Slug</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Updated</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{range .Pages}}
+        <tr>
+            <td><a href="/admin/pages/edit?id={{.ID}}">{{.Title}}</a></td>
+            <td><a href="/{{.Slug}}">{{.Slug}}</a></td>
+            <td>{{if .Published}}Published{{else}}Draft{{end}}</td>
+            <td title="{{.CreatedAt.Format "15:04 MST"}}">{{.CreatedAt.Format "Jan 2, 2006"}}</td>
+            <td title="{{.UpdatedAt.Format "15:04 MST"}}">{{.UpdatedAt.Format "Jan 2, 2006"}}</td>
+            <td>
+                <form method="POST" action="/admin/pages/delete" style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="{{$.CSRFToken}}">
+                    <input type="hidden" name="id" value="{{.ID}}">
+                    <button type="submit" onclick="return confirm('Delete this page?')">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {{end}}
+    </tbody>
+</table>
+</div>
+{{else}}
+<p>No pages yet. <a href="/admin/pages/new">Create your first page</a>.</p>
+{{end}}
+{{end}}

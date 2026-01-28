@@ -1,0 +1,32 @@
+{{template "base" .}}
+
+{{define "title"}}Tag: {{.TagName}}{{end}}
+
+{{define "content"}}
+<h2>Posts tagged with "{{.TagName}}"</h2>
+
+{{if .Posts}}
+    {{range .Posts}}
+    <article>
+        <h2><a href="/{{.PostType}}s/{{.Slug}}">{{.Title}}</a></h2>
+        <p>
+            <small>
+                <em>{{.PostType}}</em> • 
+                <time>{{.CreatedAt.Format "January 2, 2006"}}</time>
+            </small>
+        </p>
+        {{if .Tags}}
+        <p>
+            {{range .Tags}}
+            <a href="/tags/{{.}}"><kbd>{{.}}</kbd></a>
+            {{end}}
+        </p>
+        {{end}}
+        <div>{{.HTMLContent}}</div>
+        <hr>
+    </article>
+    {{end}}
+{{else}}
+    <p>No posts with this tag.</p>
+{{end}}
+{{end}}

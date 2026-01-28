@@ -1,0 +1,36 @@
+{{template "admin_base" .}}
+
+{{define "admin_title"}}{{if .Page}}Edit Page{{else}}New Page{{end}}{{end}}
+
+{{define "admin_content"}}
+<h2>{{if .Page}}Edit Page{{else}}New Page{{end}}</h2>
+
+<form method="POST">
+    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+    
+    <div class="form-group">
+        <label for="title"><span class="red">*</span>Title:</label>
+        <input type="text" id="title" name="title" value="{{if .Page}}{{.Page.Title}}{{end}}" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="slug"><span class="red">*</span>Slug:</label>
+        <input type="text" id="slug" name="slug" value="{{if .Page}}{{.Page.Slug}}{{end}}" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="content">Content (Markdown):</label>
+        <textarea id="content" name="content" rows="20" required>{{if .Page}}{{.Page.Content}}{{end}}</textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="published">Published:</label>
+        <input type="checkbox" name="published" {{if .Page}}{{if .Page.Published}}checked{{end}}{{end}}>
+    </div>
+    
+    <p>
+        <button type="submit">Save</button>
+        <a href="/admin/pages"><button type="button">Cancel</button></a>
+    </p>
+</form>
+{{end}}

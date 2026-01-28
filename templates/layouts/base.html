@@ -1,0 +1,49 @@
+{{define "base"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>{{block "title" .}}{{end}} &mdash; Alec Stewart</title>
+    <link rel="stylesheet" href="/static/neat.css" type="text/css">
+    <link rel="stylesheet" href="/static/custom.css" type="text/css">
+</head>
+<body>
+    <header>
+        <a class="title" href="/">
+            <h1>
+                Alec Stewart
+            </h1>
+        </a>
+        <nav>
+            <p>
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+                <a href="/now">Now</a>
+                <a href="/articles">Articles</a>
+                <a href="/more">More...</a>
+                {{ if .IsAuthenticated }}
+                <a href="/admin" style="color:var(--dark);">Dashboard</a>
+                <a href="/admin/logout" style="color:var(--dark);">Logout</a>
+                {{ end }}
+            </p>
+        </nav>
+    </header>
+    
+    <main>
+        {{block "content" .}}{{end}}
+    </main>
+    
+    <footer>
+        <p>
+            <small><a href="#">Home</a> | <a href="#">Contact</a> | <a href="/feed">Feed</a></small>
+        </p>
+        <p>
+            <small><strong>Alec Stewart</strong> &copy; 2026
+            &mdash; <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></small>
+        </p>
+    </footer>
+</body>
+</html>
+{{end}}

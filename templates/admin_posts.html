@@ -1,0 +1,58 @@
+{{template "admin_base" .}}
+
+{{define "admin_title"}}Manage Posts{{end}}
+
+{{define "admin_content"}}
+<h2>Manage Posts</h2>
+
+<p>
+    <a href="/admin/posts/new"><button>New Post</button></a>
+</p>
+
+{{if .Posts}}
+<div class="table-container">
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Slug</th>
+            <th>Tags</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Updated</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{range .Posts}}
+        <tr>
+            <td><a href="/admin/posts/edit?id={{.ID}}">{{.Title}}</a></td>
+            <td>{{.PostType}}</td>
+            <td><a href="/{{.PostType}}s/{{.Slug}}">{{.Slug}}</a></td>
+            <td>
+                {{if .Tags}}
+                    {{range $i, $tag := .Tags}}{{if $i}}, {{end}}{{$tag}}{{end}}
+                {{else}}
+                    -
+                {{end}}
+            </td>
+            <td>{{if .Published}}Published{{else}}Draft{{end}}</td>
+            <td title="{{.CreatedAt.Format "15:04 MST"}}">{{.CreatedAt.Format "Jan 2, 2006"}}</td>
+            <td title="{{.UpdatedAt.Format "15:04 MST"}}">{{.UpdatedAt.Format "Jan 2, 2006"}}</td>
+            <td>
+                <form method="POST" action="/admin/posts/delete" style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="{{$.CSRFToken}}">
+                    <input type="hidden" name="id" value="{{.ID}}">
+                    <button type="submit" onclick="return confirm('Delete this post?')">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {{end}}
+    </tbody>
+</table>
+</div>
+{{else}}
+<p>No posts yet. <a href="/admin/posts/new">Create your first post</a>.</p>
+{{end}}
+{{end}}

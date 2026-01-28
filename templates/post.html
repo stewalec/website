@@ -1,0 +1,23 @@
+{{template "base" .}}
+
+{{define "title"}}{{.Post.Title}}{{end}}
+
+{{define "content"}}
+<article>
+    <h2>{{.Post.Title}}</h2>
+    <p>
+        <small>
+            <em>{{.Post.PostType}}</em> • 
+            <time>{{.Post.CreatedAt.Format "January 2, 2006"}}</time>
+        </small>
+    </p>
+    {{if .Post.Tags}}
+    <p>
+        {{range .Post.Tags}}
+        <a href="/tags/{{.}}"><kbd>{{.}}</kbd></a>
+        {{end}}
+    </p>
+    {{end}}
+    <div>{{.Post.HTMLContent}}</div>
+</article>
+{{end}}
