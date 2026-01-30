@@ -8,7 +8,7 @@
     --lesslight: #efefef;
     --dark: #404040;
     --moredark: #000;
-    --link: #197ba9;
+    --link: royalblue;
     border-top: 5px solid var(--dark);
     line-height: 1.5em;
     font-family: system-ui, sans-serif;
@@ -24,7 +24,7 @@ button, input, textarea {
     font-size: 1em; /* Override browser default font shrinking*/
 }
 
-input, textarea {
+input {
     border: 1px solid var(--dark);
     background-color: var(--lesslight);
     border-radius: .25em;
@@ -58,7 +58,7 @@ body {
 
 a {
     outline: none;
-    color: var(--link);
+    color: var(--dark);
 }
 
 a:hover {
@@ -168,7 +168,11 @@ input.center {
         --lesslight: #333;
         --dark: #eee;
         --moredark: #fefefe;
-        --link: #8cc2dd;
+    }
+    /* This fixes an odd blue then white shadow on FF in dark mode */
+    *:focus {
+        outline: var(--light);
+        box-shadow: 0 0 0 .25em var(--link);
     }
     .button a {
         color: var(--light);

@@ -8,6 +8,8 @@
     <title>{{block "title" .}}{{end}} &mdash; Alec Stewart</title>
     <link rel="stylesheet" href="/static/neat.css" type="text/css">
     <link rel="stylesheet" href="/static/custom.css" type="text/css">
+    <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss">
+    {{ if .CanonicalURL }}<link rel="canonical" href="{{.CanonicalURL}}" />{{ end }}
 </head>
 <body>
     <header>
@@ -24,8 +26,8 @@
                 <a href="/articles">Articles</a>
                 <a href="/more">More...</a>
                 {{ if .IsAuthenticated }}
-                <a href="/admin" style="color:var(--dark);">Dashboard</a>
-                <a href="/admin/logout" style="color:var(--dark);">Logout</a>
+                <a href="/admin">Dashboard</a>
+                <a href="/logout">Logout</a>
                 {{ end }}
             </p>
         </nav>

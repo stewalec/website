@@ -26,6 +26,8 @@ var templateFS embed.FS
 //go:embed static/*
 var staticFS embed.FS
 
+var host = "http://localhost:8080"
+
 type App struct {
 	db        *sql.DB
 	templates map[string]*template.Template
@@ -105,7 +107,14 @@ func main() {
 	mux.HandleFunc("/tags", app.handleTags)
 	mux.HandleFunc("/tags/", app.handleTagPosts)
 	mux.HandleFunc("/pages/", app.handlePage)
-	//mux.HandleFunc("/now", app.handleNow)
+	mux.HandleFunc("/now", app.handleNow)
+
+	// RSS feeds
+	mux.HandleFunc("/rss", app.handleRSSFeed)
+	mux.HandleFunc("/articles/rss", app.handlePostTypeRSS("article"))
+	mux.HandleFunc("/notes/rss", app.handlePostTypeRSS("note"))
+	mux.HandleFunc("/links/rss", app.handlePostTypeRSS("link"))
+	mux.HandleFunc("/photos/rss", app.handlePostTypeRSS("photo"))
 
 	// Admin routes
 	mux.HandleFunc("/login", app.handleLogin)
@@ -208,4 +217,28 @@ func generateToken() string {
 func (app *App) isAuthenticated(r *http.Request) bool {
 	cookie, err := r.Cookie("auth_token")
 	return err == nil && cookie.Value != ""
+}
+
+func (app *App) getPostTags(postID int) []string {
+	rows, err := app.db.Query(`
+		SELECT t.name
+		FROM tags t
+		JOIN post_tags pt ON t.id = pt.tag_id
+		WHERE pt.post_id = ?
+		ORDER BY t.name asc
+	`, postID)
+	if err != nil {
+		return []string{}
+	}
+	defer rows.Close()
+
+	var tags []string
+	for rows.Next() {
+		var tag string
+		if err := rows.Scan(&tag); err != nil {
+			continue
+		}
+		tags = append(tags, tag)
+	}
+	return tags
 }
