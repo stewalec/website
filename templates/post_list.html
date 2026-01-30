@@ -7,23 +7,23 @@
 
 {{if .Posts}}
     {{range .Posts}}
-    <article>
-        <h2><a href="/{{.PostType}}s/{{.Slug}}">{{.Title}}</a></h2>
-        <p>
-            <small>
-                <time>{{.CreatedAt.Format "January 2, 2006"}}</time>
-            </small>
-        </p>
-        {{if .Tags}}
-        <p>
-            {{range .Tags}}
-            <a href="/tags/{{.}}"><kbd>{{.}}</kbd></a>
-            {{end}}
-        </p>
+        {{ if eq .PostType "article" }}
+        <ul class="blog-posts">
+            <li>
+                <span><time>{{.CreatedAt.Format "Jan 2, 2006"}}</time></span>
+                <a href="/{{.PostType}}s/{{.Slug}}">{{.Title}}</a>
+                {{ if $.IsAuthenticated }}<small style="margin-left:5px;">(<a href="/admin/posts/edit?id={{.ID}}">edit</a>)</small>{{end}}
+            </li>
+        </ul>
+        {{else}}
+        <dl class="breathe">
+            <dt>
+                <a href="/{{.PostType}}s/{{.Slug}}"><time>{{.CreatedAt.Format "January 2, 2006"}}</time></a>
+                {{ if $.IsAuthenticated }}<small style="margin-left:5px;">(<a href="/admin/posts/edit?id={{.ID}}">edit</a>)</small>{{end}}
+            </dt>
+            <dd>{{.HTMLContent}}</dd>
+        </dl>
         {{end}}
-        <div>{{.HTMLContent}}</div>
-        <hr>
-    </article>
     {{end}}
 {{else}}
     <p>No posts yet.</p>

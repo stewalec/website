@@ -90,7 +90,7 @@ func (app *App) handlePostsByType(postType string) http.HandlerFunc {
 
 		if slug == "" {
 			rows, err := app.db.Query(`
-				SELECT id, title, slug, content, post_type, created_at
+				SELECT id, title, slug, content, post_type, created_at, updated_at
 				FROM posts
 				WHERE post_type = ? AND published = 1
 				ORDER BY created_at DESC
@@ -104,7 +104,7 @@ func (app *App) handlePostsByType(postType string) http.HandlerFunc {
 			var posts []Post
 			for rows.Next() {
 				var p Post
-				if err := rows.Scan(&p.ID, &p.Title, &p.Slug, &p.Content, &p.PostType, &p.CreatedAt); err != nil {
+				if err := rows.Scan(&p.ID, &p.Title, &p.Slug, &p.Content, &p.PostType, &p.CreatedAt, &p.UpdatedAt); err != nil {
 					continue
 				}
 				p.HTMLContent = app.markdownToHTML(p.Content)
@@ -128,10 +128,10 @@ func (app *App) handlePostsByType(postType string) http.HandlerFunc {
 
 		var post Post
 		err := app.db.QueryRow(`
-			SELECT id, title, slug, content, post_type, created_at
+			SELECT id, title, slug, content, post_type, created_at, updated_at
 			FROM posts
 			WHERE slug = ? AND post_type = ? AND published = 1
-		`, slug, postType).Scan(&post.ID, &post.Title, &post.Slug, &post.Content, &post.PostType, &post.CreatedAt)
+		`, slug, postType).Scan(&post.ID, &post.Title, &post.Slug, &post.Content, &post.PostType, &post.CreatedAt, &post.UpdatedAt)
 
 		if err == sql.ErrNoRows {
 			http.NotFound(w, r)

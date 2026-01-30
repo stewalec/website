@@ -67,10 +67,6 @@ footer {
     color: var(--dark);
 }
 
-ul.blog-posts li time {
-    color: var(--muted);
-}
-
 ul.blog-posts{ list-style:none; padding:unset; }
 ul.blog-posts li{ display:flex; margin-bottom:4px; flex-direction:column; }
 @media (min-width:600px){
@@ -144,3 +140,23 @@ tbody tr:nth-child(even) td:first-child {
 }
 
 span.email b { display: none; }
+
+.breathe {
+    margin-top: 2.2em;
+}
+
+time {
+    color: var(--muted);
+}
+
+a[href^="http"]::after,
+a[href^="https://"]::after {
+    content: " \2197";
+    font-size: 0.8em;
+    vertical-align: super;
+}
+
+/* Exclude internal links (your domain) */
+a[href*="localhost"]::after {
+    content: none;
+}
