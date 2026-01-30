@@ -160,3 +160,7 @@ a[href^="https://"]::after {
 a[href*="localhost"]::after {
     content: none;
 }
+
+main small {
+    color: var(--muted);
+}

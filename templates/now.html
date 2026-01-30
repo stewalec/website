@@ -1,0 +1,11 @@
+{{template "base" .}}
+
+{{define "title"}}Now{{end}}
+
+{{define "content"}}
+<article>
+    <h2>Now</h2>
+    <small>This is a <a href="https://nownownow.com">now</a> page and it was last updated on <time>{{.Page.UpdatedAt.Format "January 2, 2006 at 3:04 MST"}}</time>.</small>
+    <div class="breathe">{{.Page.HTMLContent}}</div>
+</article>
+{{end}}

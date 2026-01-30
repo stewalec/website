@@ -5,7 +5,7 @@
 {{define "content"}}
 <article>
     <h2>{{.Post.Title}}</h2>
-    <p style="color:var(--muted)">
+    <p>
         <small>
             <time>{{.Post.CreatedAt.Format "January 2, 2006"}}</time>
             {{ if ne (.Post.UpdatedAt.Format "2006-01-02") (.Post.CreatedAt.Format "2006-01-02") }}

@@ -270,13 +270,13 @@ func (app *App) handlePage(w http.ResponseWriter, r *http.Request) {
 func (app *App) handleNow(w http.ResponseWriter, r *http.Request) {
 	var now Post
 	err := app.db.QueryRow(`
-		SELECT p.id, p.title, p.slug, p.content, p.created_at
+		SELECT p.id, p.title, p.slug, p.content, p.created_at, p.updated_at
 		FROM posts p
 		JOIN post_tags pt ON p.id = pt.post_id
 		JOIN tags t ON pt.tag_id = t.id
 		WHERE t.name = ? AND p.published = 1
 		ORDER BY p.created_at DESC LIMIT 1
-	`, "now").Scan(&now.ID, &now.Title, &now.Slug, &now.Content, &now.CreatedAt)
+	`, "now").Scan(&now.ID, &now.Title, &now.Slug, &now.Content, &now.CreatedAt, &now.UpdatedAt)
 
 	if err == sql.ErrNoRows {
 		http.NotFound(w, r)
@@ -297,7 +297,7 @@ func (app *App) handleNow(w http.ResponseWriter, r *http.Request) {
 		"IsAuthenticated": app.isAuthenticated(r),
 	}
 
-	err = app.templates["page.html"].ExecuteTemplate(w, "base", data)
+	err = app.templates["now.html"].ExecuteTemplate(w, "base", data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
