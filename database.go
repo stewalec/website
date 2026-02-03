@@ -7,8 +7,10 @@ import (
 	"io/fs"
 	"log"
 	"strings"
+	"syscall"
 
 	"golang.org/x/crypto/bcrypt"
+	"golang.org/x/term"
 	_ "modernc.org/sqlite"
 )
 
@@ -23,7 +25,7 @@ func (app *App) initDB() error {
 	// - busy_timeout=5000: lock 5 seconds
 	// - synchronous=NORMAL: "The synchronous=NORMAL setting is a good choice for most applications running in WAL mode."
 	// - cache_size=-64000: 64MB ram for db cache
-	app.db, err = sql.Open("sqlite", "blog.db?_pragma=journal_mode(WAL)&_pragma=foreign_keys(ON)&_pragma=busy_timeout(5000)&_pragma=synchronous(NORMAL)&_pragma=cache_size(-64000)")
+	app.db, err = sql.Open("sqlite", "website.db?_pragma=journal_mode(WAL)&_pragma=foreign_keys(ON)&_pragma=busy_timeout(5000)&_pragma=synchronous(NORMAL)&_pragma=cache_size(-64000)")
 	if err != nil {
 		return err
 	}
@@ -90,16 +92,30 @@ func (app *App) createDefaultUser() error {
 	}
 
 	if count == 0 {
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte("admin"), bcrypt.DefaultCost)
+		var username string
+		log.Print("No users found. Prompting to create a user\n")
+
+		fmt.Print("Username: ")
+		fmt.Scanln(&username)
+
+		fmt.Print("Password: ")
+		passwordBytes, err := term.ReadPassword(int(syscall.Stdin))
+		if err != nil {
+			fmt.Printf("\nError reading password: %v\n", err)
+			return err
+		}
+		fmt.Println()
+
+		hashedPassword, err := bcrypt.GenerateFromPassword(passwordBytes, bcrypt.DefaultCost)
 		if err != nil {
 			return err
 		}
 
-		_, err = app.db.Exec("INSERT INTO users (username, password) VALUES (?, ?)", "admin", string(hashedPassword))
+		_, err = app.db.Exec("INSERT INTO users (username, password) VALUES (?, ?)", username, string(hashedPassword))
 		if err != nil {
 			return err
 		}
-		log.Println("Default user created - Username: admin, Password: *****")
+		log.Printf("User %s created", username)
 	}
 
 	return nil
