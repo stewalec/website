@@ -25,7 +25,7 @@
     <tbody>
         {{range .Pages}}
         <tr>
-            <td><a href="/admin/pages/edit?id={{.ID}}">{{.Title}}</a></td>
+            <td><a href="/admin/pages/edit/{{.ID}}">{{.Title}}</a></td>
             <td><a href="/{{.Slug}}">{{.Slug}}</a></td>
             <td>{{if .Published}}Published{{else}}Draft{{end}}</td>
             <td title="{{.CreatedAt.Format "15:04 MST"}}">{{.CreatedAt.Format "Jan 2, 2006"}}</td>

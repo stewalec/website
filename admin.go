@@ -36,7 +36,7 @@ func (app *App) handleLogin(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil || bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)) != nil {
 		data := map[string]any{
-			"Error":     "Invalid credentials",
+			"Error":     "Invalid username or password",
 			"CSRFToken": app.csrfToken,
 		}
 
@@ -61,6 +61,7 @@ func (app *App) handleLogin(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/admin", http.StatusSeeOther)
 }
 
+// TODO: Change to POST request to follow spec
 func (app *App) handleLogout(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{
 		Name:   "auth_token",
@@ -165,7 +166,7 @@ func (app *App) handleNewPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *App) handleEditPost(w http.ResponseWriter, r *http.Request) {
-	idStr := r.URL.Query().Get("id")
+	idStr := r.PathValue("id")
 	id, _ := strconv.Atoi(idStr)
 
 	if r.Method == "GET" {
@@ -318,7 +319,7 @@ func (app *App) handleNewPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *App) handleEditPage(w http.ResponseWriter, r *http.Request) {
-	idStr := r.URL.Query().Get("id")
+	idStr := r.PathValue("id")
 	id, _ := strconv.Atoi(idStr)
 
 	if r.Method == "GET" {
