@@ -96,18 +96,21 @@ func main() {
 	mux := http.NewServeMux()
 
 	// Static files
-	mux.Handle("/static/", http.FileServer(http.FS(staticFS)))
+	mux.Handle("GET /static/", http.FileServer(http.FS(staticFS)))
 
 	// Public routes
-	mux.HandleFunc("/", app.handleHome)
-	mux.HandleFunc("/articles/", app.handlePostsByType("article"))
-	mux.HandleFunc("/notes/", app.handlePostsByType("note"))
-	mux.HandleFunc("/links/", app.handlePostsByType("link"))
-	mux.HandleFunc("/photos/", app.handlePostsByType("photo"))
-	mux.HandleFunc("/tags", app.handleTags)
-	mux.HandleFunc("/tags/", app.handleTagPosts)
-	mux.HandleFunc("/pages/", app.handlePage)
-	mux.HandleFunc("/now", app.handleNow)
+	mux.HandleFunc("GET /", app.handleHome)
+	mux.HandleFunc("GET /articles", app.handlePostsList("article"))
+	mux.HandleFunc("GET /articles/{slug}", app.handlePosts("article"))
+	mux.HandleFunc("GET /notes", app.handlePostsList("note"))
+	mux.HandleFunc("GET /notes/{slug}", app.handlePosts("note"))
+	mux.HandleFunc("GET /links", app.handlePostsList("link"))
+	mux.HandleFunc("GET /links/{slug}", app.handlePosts("link"))
+	mux.HandleFunc("GET /photos", app.handlePostsList("photo"))
+	mux.HandleFunc("GET /photos/{slug}", app.handlePosts("photo"))
+	mux.HandleFunc("GET /tags", app.handleTags)
+	mux.HandleFunc("GET /tags/{slug}", app.handleTagPosts)
+	mux.HandleFunc("GET /now", app.handleNow)
 
 	// RSS feeds
 	mux.HandleFunc("GET /feed.xml", app.handleRSSFeed)

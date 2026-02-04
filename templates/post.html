@@ -14,6 +14,7 @@
             {{if .Post.Tags}}
                 &bull; {{range $i, $tag := .Post.Tags}}{{if $i}}, {{end}}<em><a href="/tags/{{.}}">{{$tag}}</a></em>{{end}}
             {{end}}
+            {{ if $.IsAuthenticated }}<small style="margin-left:5px;">(<a href="/admin/posts/edit/{{.Post.ID}}">edit</a>)</small>{{end}}
         </small>
     </p>
     <div class="breathe">{{.Post.HTMLContent}}</div>

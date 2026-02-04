@@ -1,54 +1,59 @@
 :root {
-    --muted: #666;
+  --muted: #666;
 }
 
 body {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 main {
-    flex: 1;
+  flex: 1;
 }
 
 blockquote {
-    font-style: italic;
+  font-style: italic;
 }
 
-h1,h2,h3,h4,h5,h6 {
-    margin-top: 1.3em;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 1.3em;
 }
 
 textarea {
-    border: 1px solid var(--dark);
-    background-color: var(--lesslight);
-    border-radius: .25em;
-    padding: .5em;
+  border: 1px solid var(--dark);
+  background-color: var(--lesslight);
+  border-radius: 0.25em;
+  padding: 0.5em;
 }
 
 nav a {
-    margin-right: 8px;
+  margin-right: 8px;
 }
 
 footer {
-    text-align: center;
+  text-align: center;
 }
 
 .form-group {
-	margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .form-group label {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .form-group label[for="title"],
 .form-group label[for="slug"],
 .form-group label[for="tags"],
-.form-group label[for="username"], 
+.form-group label[for="username"],
 .form-group label[for="password"] {
-    display: block;
+  display: block;
 }
 
 #title,
@@ -56,111 +61,133 @@ footer {
 #content,
 #tags,
 .form-group textarea {
-    width: 100%;
+  width: 100%;
 }
 
-.title, .title:hover {
-    text-decoration: none;
+.title,
+.title:hover {
+  text-decoration: none;
 }
 
 .title h1 {
-    color: var(--dark);
+  color: var(--dark);
 }
 
-ul.blog-posts{ list-style:none; padding:unset; }
-ul.blog-posts li{ display:flex; margin-bottom:4px; flex-direction:column; }
-@media (min-width:600px){
-    ul.blog-posts li{ flex-direction:row; }
+ul.blog-posts {
+  list-style: none;
+  padding: unset;
 }
-ul.blog-posts li span{ flex:0 0 auto; min-width:13ch;}
+ul.blog-posts li {
+  display: flex;
+  margin-bottom: 4px;
+  flex-direction: column;
+}
+@media (min-width: 600px) {
+  ul.blog-posts li {
+    flex-direction: row;
+  }
+}
+ul.blog-posts li span {
+  flex: 0 0 auto;
+  min-width: 13ch;
+}
 
 .red {
-    color: #dd4b4c;
+  color: #dd4b4c;
 }
 
 .table-container {
-    overflow-x: auto;
+  overflow-x: auto;
 }
 table {
-    width: 100%;
-    table-layout: fixed;
-    border: 1px solid var(--dark);
+  width: 100%;
+  table-layout: fixed;
+  border: 1px solid var(--dark);
 }
-th, td {
-    padding: 5px;
-    text-align: center;
-    width: 120px;
-    overflow-wrap: break-word;
+th,
+td {
+  padding: 5px;
+  text-align: center;
+  width: 120px;
+  overflow-wrap: break-word;
 }
 
 /* Sticky first column */
 th:first-child,
 td:first-child {
-    width: 200px;
-    position: sticky;
-    left: 0;
-    z-index: 1;
+  width: 200px;
+  position: sticky;
+  left: 0;
+  z-index: 1;
 }
 
 /* Header styling */
 thead th {
-    background-color: var(--dark);
-    color: var(--light);
-    position: sticky;
-    top: 0;
-    z-index: 2;
+  background-color: var(--dark);
+  color: var(--light);
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
 /* First column header needs highest z-index */
 thead th:first-child {
-    z-index: 3;
+  z-index: 3;
 }
 
 /* Alternating row backgrounds */
 tbody tr:nth-child(odd) td {
-    background-color: var(--lesslight);
+  background-color: var(--lesslight);
 }
 
 tbody tr:nth-child(even) td {
-    background-color: var(--light);
+  background-color: var(--light);
 }
 
 /* Explicitly set backgrounds for sticky first column */
 tbody tr:nth-child(odd) td:first-child {
-    background-color: var(--lesslight);
+  background-color: var(--lesslight);
 }
 
 tbody tr:nth-child(even) td:first-child {
-    background-color: var(--light);
+  background-color: var(--light);
 }
 
 *:focus {
-    outline: none;
-    box-shadow: none;
+  outline: none;
+  box-shadow: none;
 }
 
-span.email b { display: none; }
+span.email b {
+  display: none;
+}
 
 .breathe {
-    margin-top: 2.2em;
+  margin-top: 2.2em;
 }
 
 time {
-    color: var(--muted);
+  color: var(--muted);
 }
 
 a[href^="http"]::after,
 a[href^="https://"]::after {
-    content: " \2197";
-    font-size: 0.8em;
-    vertical-align: super;
+  content: " \2197";
+  font-size: 0.8em;
+  vertical-align: super;
 }
 
 /* Exclude internal links (your domain) */
 a[href*="localhost"]::after {
-    content: none;
+  content: none;
 }
 
 main small {
-    color: var(--muted);
+  color: var(--muted);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --muted: #999;
+  }
 }

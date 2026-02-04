@@ -9,17 +9,27 @@ import (
 
 func (app *App) handleHome(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
-		app.handleDynamicPage(w, r)
+		app.handlePage(w, r)
 		return
 	}
 
 	rows, err := app.db.Query(`
+		WITH ranked_posts AS (
+			SELECT
+				id,
+				title,
+				slug,
+				content,
+				post_type,
+				created_at,
+				ROW_NUMBER() OVER (PARTITION BY post_type ORDER BY created_at DESC) as rn
+			FROM posts
+			WHERE post_type IN ('article', 'note')
+		)
 		SELECT id, title, slug, content, post_type, created_at 
-		FROM posts 
-		WHERE published = 1
-		AND post_type = 'article'
-		ORDER BY created_at DESC 
-		LIMIT 5
+		FROM ranked_posts
+		WHERE rn <= 5
+		ORDER BY post_type, rn
 	`)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -27,7 +37,8 @@ func (app *App) handleHome(w http.ResponseWriter, r *http.Request) {
 	}
 	defer rows.Close()
 
-	var posts []Post
+	var articles []Post
+	var notes []Post
 	for rows.Next() {
 		var p Post
 		if err := rows.Scan(&p.ID, &p.Title, &p.Slug, &p.Content, &p.PostType, &p.CreatedAt); err != nil {
@@ -35,11 +46,18 @@ func (app *App) handleHome(w http.ResponseWriter, r *http.Request) {
 		}
 		p.HTMLContent = app.markdownToHTML(p.Content)
 		p.Tags = app.getPostTags(p.ID)
-		posts = append(posts, p)
+
+		switch p.PostType {
+		case "article":
+			articles = append(articles, p)
+		case "note":
+			notes = append(notes, p)
+		}
 	}
 
 	data := map[string]any{
-		"Posts":           posts,
+		"Articles":        articles,
+		"Notes":           notes,
 		"IsAuthenticated": app.isAuthenticated(r),
 	}
 
@@ -50,7 +68,7 @@ func (app *App) handleHome(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (app *App) handleDynamicPage(w http.ResponseWriter, r *http.Request) {
+func (app *App) handlePage(w http.ResponseWriter, r *http.Request) {
 	slug := strings.TrimPrefix(r.URL.Path, "/")
 
 	var page Page
@@ -83,48 +101,10 @@ func (app *App) handleDynamicPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (app *App) handlePostsByType(postType string) http.HandlerFunc {
+func (app *App) handlePosts(postType string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		pathPrefix := "/" + postType + "s/"
 		slug := strings.TrimPrefix(r.URL.Path, pathPrefix)
-
-		if slug == "" {
-			rows, err := app.db.Query(`
-				SELECT id, title, slug, content, post_type, created_at, updated_at
-				FROM posts
-				WHERE post_type = ? AND published = 1
-				ORDER BY created_at DESC
-			`, postType)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-			defer rows.Close()
-
-			var posts []Post
-			for rows.Next() {
-				var p Post
-				if err := rows.Scan(&p.ID, &p.Title, &p.Slug, &p.Content, &p.PostType, &p.CreatedAt, &p.UpdatedAt); err != nil {
-					continue
-				}
-				p.HTMLContent = app.markdownToHTML(p.Content)
-				p.Tags = app.getPostTags(p.ID)
-				posts = append(posts, p)
-			}
-
-			data := map[string]any{
-				"Posts":           posts,
-				"PostType":        titleCase(postType),
-				"IsAuthenticated": app.isAuthenticated(r),
-			}
-
-			err = app.templates["post_list.html"].ExecuteTemplate(w, "base", data)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-			return
-		}
 
 		var post Post
 		err := app.db.QueryRow(`
@@ -158,6 +138,45 @@ func (app *App) handlePostsByType(postType string) http.HandlerFunc {
 	}
 }
 
+func (app *App) handlePostsList(postType string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		rows, err := app.db.Query(`
+			SELECT id, title, slug, content, post_type, created_at, updated_at
+			FROM posts
+			WHERE post_type = ? AND published = 1
+			ORDER BY created_at DESC
+		`, postType)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer rows.Close()
+
+		var posts []Post
+		for rows.Next() {
+			var p Post
+			if err := rows.Scan(&p.ID, &p.Title, &p.Slug, &p.Content, &p.PostType, &p.CreatedAt, &p.UpdatedAt); err != nil {
+				continue
+			}
+			p.HTMLContent = app.markdownToHTML(p.Content)
+			p.Tags = app.getPostTags(p.ID)
+			posts = append(posts, p)
+		}
+
+		data := map[string]any{
+			"Posts":           posts,
+			"PostType":        titleCase(postType),
+			"IsAuthenticated": app.isAuthenticated(r),
+		}
+
+		err = app.templates["post_list.html"].ExecuteTemplate(w, "base", data)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+}
+
 func (app *App) handleTags(w http.ResponseWriter, r *http.Request) {
 	rows, err := app.db.Query(`
 		SELECT t.name, COUNT(pt.post_id) as count
@@ -178,7 +197,9 @@ func (app *App) handleTags(w http.ResponseWriter, r *http.Request) {
 		if err := rows.Scan(&tag.Name, &tag.Count); err != nil {
 			continue
 		}
-		tags = append(tags, tag)
+		if tag.Count > 0 {
+			tags = append(tags, tag)
+		}
 	}
 
 	data := map[string]any{
@@ -228,39 +249,6 @@ func (app *App) handleTagPosts(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = app.templates["tag_posts.html"].ExecuteTemplate(w, "base", data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
-func (app *App) handlePage(w http.ResponseWriter, r *http.Request) {
-	slug := strings.TrimPrefix(r.URL.Path, "/pages/")
-
-	var page Page
-	err := app.db.QueryRow(`
-		SELECT id, title, slug, content, created_at
-		FROM pages
-		WHERE slug = ? AND published = 1
-	`, slug).Scan(&page.ID, &page.Title, &page.Slug, &page.Content, &page.CreatedAt)
-
-	if err == sql.ErrNoRows {
-		http.NotFound(w, r)
-		return
-	}
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	page.HTMLContent = app.markdownToHTML(page.Content)
-
-	data := map[string]any{
-		"Page":            page,
-		"IsAuthenticated": app.isAuthenticated(r),
-	}
-
-	err = app.templates["page.html"].ExecuteTemplate(w, "base", data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

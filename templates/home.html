@@ -5,17 +5,34 @@
 {{define "content"}}
 <h2>Recent Articles</h2>
 
-{{if .Posts}}
-    {{range .Posts}}
+{{if .Articles}}
+    {{range .Articles}}
     <ul class="blog-posts">
         <li>
             <span><time>{{.CreatedAt.Format "Jan 2, 2006"}}</time></span>
             <a href="/{{.PostType}}s/{{.Slug}}">{{.Title}}</a>
+            {{ if $.IsAuthenticated }}<small style="margin-left:5px;">(<a href="/admin/posts/edit/{{.ID}}">edit</a>)</small>{{end}}
         </li>
     </ul>
     {{end}}
-    <a href="/archive">See more posts &rarr;</a>
+    <a href="/articles">See more articles &rarr;</a>
 {{else}}
-    <p>No posts yet.</p>
+    <p>No articles yet.</p>
+{{end}}
+
+<h2>Recent Notes</h2>
+{{if .Notes}}
+    {{range .Notes}}
+    <dl class="breathe">
+        <dt>
+            <a href="/{{.PostType}}s/{{.Slug}}"><time>{{.CreatedAt.Format "January 2, 2006"}}</time></a>
+            {{ if $.IsAuthenticated }}<small style="margin-left:5px;">(<a href="/admin/posts/edit/{{.ID}}">edit</a>)</small>{{end}}
+        </dt>
+        <dd>{{.HTMLContent}}</dd>
+    </dl>
+    {{end}}
+    <a href="/notes">See more notes &rarr;</a>
+{{else}}
+    <p>No notes yet.</p>
 {{end}}
 {{end}}
