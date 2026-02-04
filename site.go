@@ -114,7 +114,7 @@ func (app *App) handlePostsByType(postType string) http.HandlerFunc {
 
 			data := map[string]any{
 				"Posts":           posts,
-				"PostType":        strings.ToUpper(string(postType[0])) + string(postType[1:]),
+				"PostType":        titleCase(postType),
 				"IsAuthenticated": app.isAuthenticated(r),
 			}
 
@@ -289,7 +289,7 @@ func (app *App) handleNow(w http.ResponseWriter, r *http.Request) {
 
 	now.HTMLContent = app.markdownToHTML(now.Content)
 
-	canonicalURL := fmt.Sprintf("%s/notes/%s", host, now.Slug)
+	canonicalURL := fmt.Sprintf("%s/notes/%s", baseUrl, now.Slug)
 
 	data := map[string]any{
 		"Page":            now,

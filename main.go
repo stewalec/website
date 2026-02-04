@@ -26,7 +26,7 @@ var templateFS embed.FS
 //go:embed static/*
 var staticFS embed.FS
 
-var host = "http://localhost:8080"
+var baseUrl = "http://localhost:8080"
 
 type App struct {
 	db        *sql.DB
@@ -246,4 +246,8 @@ func (app *App) getPostTags(postID int) []string {
 		tags = append(tags, tag)
 	}
 	return tags
+}
+
+func titleCase(str string) string {
+	return strings.ToUpper(string(str[0])) + string(str[1:])
 }

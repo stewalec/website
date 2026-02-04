@@ -69,12 +69,7 @@ func (app *App) generateRSSFeed(postType, baseURL, title, description string) (*
 
 		// Convert markdown to HTML for description
 		htmlContent := app.markdownToHTML(content)
-
-		// Truncate description to first 500 chars
 		desc := string(htmlContent)
-		if len(desc) > 500 {
-			desc = desc[:500] + "..."
-		}
 
 		items = append(items, Item{
 			Title:       postTitle,
@@ -101,9 +96,8 @@ func (app *App) generateRSSFeed(postType, baseURL, title, description string) (*
 }
 
 func (app *App) handleRSSFeed(w http.ResponseWriter, r *http.Request) {
-	baseURL := "http://" + r.Host
-
-	feed, err := app.generateRSSFeed("", baseURL, "My Blog", "Recent posts from my blog")
+	feed, err := app.generateRSSFeed("", baseUrl, "Alec Stewart - Everything Feed",
+		"Articles, notes, links, photos... all my recent content")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -123,12 +117,10 @@ func (app *App) handleRSSFeed(w http.ResponseWriter, r *http.Request) {
 
 func (app *App) handlePostTypeRSS(postType string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		baseURL := "http://" + r.Host
+		title := "Alec Stewart - " + titleCase(postType) + "s Feed"
+		description := "All my recent " + postType + "s"
 
-		title := "My Blog - " + postType + "s"
-		description := "Recent " + postType + "s from my blog"
-
-		feed, err := app.generateRSSFeed(postType, baseURL, title, description)
+		feed, err := app.generateRSSFeed(postType, baseUrl, title, description)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
