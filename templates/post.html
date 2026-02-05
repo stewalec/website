@@ -1,10 +1,12 @@
 {{template "base" .}}
 
-{{define "title"}}{{.Post.Title}}{{end}}
+{{define "title"}}
+{{if .Post.Title}}{{.Post.Title}}{{else}}{{.Post.CreatedAt.Format "2006-01-02 15:04 MST"}} ({{.Post.PostType}}){{end}}
+{{end}}
 
 {{define "content"}}
 <article>
-    <h2>{{.Post.Title}}</h2>
+    {{if .Post.Title}}<h2>{{.Post.Title}}</h2>{{end}}
     <p>
         <small>
             <time>{{.Post.CreatedAt.Format "Jan 2, 2006"}}</time>

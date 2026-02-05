@@ -27,7 +27,7 @@
     <tbody>
         {{range .Posts}}
         <tr>
-            <td><a href="/admin/posts/edit/{{.ID}}">{{.Title}}</a></td>
+            <td><a href="/admin/posts/edit/{{.ID}}">{{if .Title}}{{.Title}}{{else}}&#9998; Edit Post{{end}}</a></td>
             <td>{{.PostType}}</td>
             <td><a href="/{{.PostType}}s/{{.Slug}}">{{.Slug}}</a></td>
             <td>

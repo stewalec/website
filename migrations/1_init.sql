@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 CREATE TABLE IF NOT EXISTS posts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
+    title TEXT,
     slug TEXT UNIQUE NOT NULL,
     content TEXT NOT NULL,
     post_type TEXT NOT NULL,

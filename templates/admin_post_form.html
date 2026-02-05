@@ -9,8 +9,8 @@
     <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
     
     <div class="form-group">
-        <label for="title"><span class="red">*</span>Title:</label>
-        <input type="text" id="title" name="title" value="{{if .Post}}{{.Post.Title}}{{end}}" required>
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" value="{{if .Post}}{{.Post.Title}}{{end}}">
     </div>
     
     <div class="form-group">

@@ -10,7 +10,7 @@
         <ul class="posts">
             <li>
                 <span><time>{{.CreatedAt.Format "Jan 2, 2006"}}</time></span>
-                <a href="/{{.PostType}}s/{{.Slug}}">{{.Title}}</a>
+                <a href="/{{.PostType}}s/{{.Slug}}">{{if .Title}}{{.Title}}{{else}}{{.CreatedAt.Format "2006-01-02 15:04 MST"}} ({{.PostType}}){{end}}</a>
             </li>
         </ul>
     {{end}}

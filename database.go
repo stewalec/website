@@ -40,12 +40,13 @@ func (app *App) initDB() error {
 	return err
 }
 
+// Adapted from git.j3s.sh/vore
 func (app *App) runMigrations() error {
 	var latestVersion int
+
 	err := app.db.QueryRow("SELECT MAX(version) FROM schema_migrations").Scan(&latestVersion)
 	if err != nil {
 		if strings.Contains(err.Error(), "converting NULL to int is unsupported") {
-			// assume that we're starting from ground zero
 			latestVersion = 0
 		} else {
 			return err
@@ -66,7 +67,6 @@ func (app *App) runMigrations() error {
 			return err
 		}
 
-		// Apply migration if not already applied
 		if version > latestVersion {
 			fileData, _ := fs.ReadFile(migrationFiles, "migrations/"+f.Name())
 			_, err := app.db.Exec(string(fileData))
