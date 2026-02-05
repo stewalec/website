@@ -7,7 +7,7 @@
 
 {{if .Posts}}
     {{range .Posts}}
-        <ul class="blog-posts">
+        <ul class="posts">
             <li>
                 <span><time>{{.CreatedAt.Format "Jan 2, 2006"}}</time></span>
                 <a href="/{{.PostType}}s/{{.Slug}}">{{.Title}}</a>

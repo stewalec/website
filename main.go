@@ -9,7 +9,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 
@@ -86,7 +85,7 @@ func main() {
 		log.Fatal("Failed to load templates:", err)
 	}
 
-	if err := app.createDefaultUser(); err != nil {
+	if err := app.createInitialUser(); err != nil {
 		log.Fatal("Failed to create default user:", err)
 	}
 
@@ -99,51 +98,54 @@ func main() {
 	mux.Handle("GET /static/", http.FileServer(http.FS(staticFS)))
 
 	// Public routes
-	mux.HandleFunc("GET /", app.handleHome)
-	mux.HandleFunc("GET /articles", app.handlePostsList("article"))
-	mux.HandleFunc("GET /articles/{slug}", app.handlePosts("article"))
-	mux.HandleFunc("GET /notes", app.handlePostsList("note"))
-	mux.HandleFunc("GET /notes/{slug}", app.handlePosts("note"))
-	mux.HandleFunc("GET /links", app.handlePostsList("link"))
-	mux.HandleFunc("GET /links/{slug}", app.handlePosts("link"))
-	mux.HandleFunc("GET /photos", app.handlePostsList("photo"))
-	mux.HandleFunc("GET /photos/{slug}", app.handlePosts("photo"))
-	mux.HandleFunc("GET /tags", app.handleTags)
-	mux.HandleFunc("GET /tags/{slug}", app.handleTagPosts)
-	mux.HandleFunc("GET /now", app.handleNow)
+	mux.HandleFunc("GET /", logHandler(app.handleHome))
+	mux.HandleFunc("GET /articles", logHandler(app.handlePostsList("article")))
+	mux.HandleFunc("GET /articles/{slug}", logHandler(app.handlePosts("article")))
+	mux.HandleFunc("GET /notes", logHandler(app.handlePostsList("note")))
+	mux.HandleFunc("GET /notes/{slug}", logHandler(app.handlePosts("note")))
+	mux.HandleFunc("GET /links", logHandler(app.handlePostsList("link")))
+	mux.HandleFunc("GET /links/{slug}", logHandler(app.handlePosts("link")))
+	mux.HandleFunc("GET /photos", logHandler(app.handlePostsList("photo")))
+	mux.HandleFunc("GET /photos/{slug}", logHandler(app.handlePosts("photo")))
+	mux.HandleFunc("GET /tags", logHandler(app.handleTags))
+	mux.HandleFunc("GET /tags/{slug}", logHandler(app.handleTagPosts))
+	mux.HandleFunc("GET /now", logHandler(app.handleNow))
 
 	// RSS feeds
-	mux.HandleFunc("GET /feed.xml", app.handleRSSFeed)
-	mux.HandleFunc("GET /articles/feed.xml", app.handlePostTypeRSS("article"))
-	mux.HandleFunc("GET /notes/feed.xml", app.handlePostTypeRSS("note"))
-	mux.HandleFunc("GET /links/feed.xml", app.handlePostTypeRSS("link"))
-	mux.HandleFunc("GET /photos/feed.xml", app.handlePostTypeRSS("photo"))
+	mux.HandleFunc("GET /feed.xml", logHandler(app.handleRSSFeed))
+	mux.HandleFunc("GET /articles/feed.xml", logHandler(app.handlePostTypeRSS("article")))
+	mux.HandleFunc("GET /notes/feed.xml", logHandler(app.handlePostTypeRSS("note")))
+	mux.HandleFunc("GET /links/feed.xml", logHandler(app.handlePostTypeRSS("link")))
+	mux.HandleFunc("GET /photos/feed.xml", logHandler(app.handlePostTypeRSS("photo")))
 
 	// Admin routes
-	mux.HandleFunc("GET /login", app.handleLogin)
-	mux.HandleFunc("POST /login", app.handleLogin)
-	mux.HandleFunc("GET /logout", app.handleLogout)
-	mux.HandleFunc("GET /admin", app.requireAuth(app.handleAdmin))
-	mux.HandleFunc("GET /admin/posts", app.requireAuth(app.handleAdminPosts))
-	mux.HandleFunc("GET /admin/posts/new", app.requireAuth(app.handleNewPost))
-	mux.HandleFunc("POST /admin/posts/new", app.requireAuth(app.handleNewPost))
-	mux.HandleFunc("GET /admin/posts/edit/{id}", app.requireAuth(app.handleEditPost))
-	mux.HandleFunc("POST /admin/posts/edit/{id}", app.requireAuth(app.handleEditPost))
-	mux.HandleFunc("POST /admin/posts/delete", app.requireAuth(app.handleDeletePost))
-	mux.HandleFunc("GET /admin/pages", app.requireAuth(app.handleAdminPages))
-	mux.HandleFunc("GET /admin/pages/new", app.requireAuth(app.handleNewPage))
-	mux.HandleFunc("POST /admin/pages/new", app.requireAuth(app.handleNewPage))
-	mux.HandleFunc("GET /admin/pages/edit/{id}", app.requireAuth(app.handleEditPage))
-	mux.HandleFunc("POST /admin/pages/edit/{id}", app.requireAuth(app.handleEditPage))
-	mux.HandleFunc("POST /admin/pages/delete", app.requireAuth(app.handleDeletePage))
+	mux.HandleFunc("GET /login", logHandler(app.handleLogin))
+	mux.HandleFunc("POST /login", logHandler(app.handleLogin))
+	mux.HandleFunc("GET /logout", logHandler(app.handleLogout))
+	mux.HandleFunc("GET /admin", logHandler(app.requireAuth(app.handleAdmin)))
+	mux.HandleFunc("GET /admin/posts", logHandler(app.requireAuth(app.handleAdminPosts)))
+	mux.HandleFunc("GET /admin/posts/new", logHandler(app.requireAuth(app.handleNewPost)))
+	mux.HandleFunc("POST /admin/posts/new", logHandler(app.requireAuth(app.handleNewPost)))
+	mux.HandleFunc("GET /admin/posts/edit/{id}", logHandler(app.requireAuth(app.handleEditPost)))
+	mux.HandleFunc("POST /admin/posts/edit/{id}", logHandler(app.requireAuth(app.handleEditPost)))
+	mux.HandleFunc("POST /admin/posts/delete", logHandler(app.requireAuth(app.handleDeletePost)))
+	mux.HandleFunc("GET /admin/pages", logHandler(app.requireAuth(app.handleAdminPages)))
+	mux.HandleFunc("GET /admin/pages/new", logHandler(app.requireAuth(app.handleNewPage)))
+	mux.HandleFunc("POST /admin/pages/new", logHandler(app.requireAuth(app.handleNewPage)))
+	mux.HandleFunc("GET /admin/pages/edit/{id}", logHandler(app.requireAuth(app.handleEditPage)))
+	mux.HandleFunc("POST /admin/pages/edit/{id}", logHandler(app.requireAuth(app.handleEditPage)))
+	mux.HandleFunc("POST /admin/pages/delete", logHandler(app.requireAuth(app.handleDeletePage)))
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
+	srv := &http.Server{
+		Addr:         ":8080",
+		Handler:      mux,
+		IdleTimeout:  time.Minute,
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
 	}
 
-	log.Printf("Server starting on http://localhost:%s\n", port)
-	log.Fatal(http.ListenAndServe(":"+port, mux))
+	log.Printf("Server starting on http://localhost:%s\n", srv.Addr)
+	log.Fatal(srv.ListenAndServe())
 }
 
 func (app *App) loadTemplates() error {
@@ -209,6 +211,15 @@ func (app *App) requireAuth(next http.HandlerFunc) http.HandlerFunc {
 		}
 		next(w, r)
 	}
+}
+
+// https://stackoverflow.com/a/38469116
+func logHandler(next http.HandlerFunc) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		next.ServeHTTP(w, r)
+		log.Printf("%s %s %s %v", r.Method, r.URL.Path, r.RemoteAddr, time.Since(start))
+	})
 }
 
 func (app *App) validateCSRF(r *http.Request) bool {

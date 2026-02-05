@@ -1,3 +1,7 @@
+/*
+ *  General
+ */
+
 :root {
   --muted: #666;
 }
@@ -25,6 +29,11 @@ h6 {
   margin-top: 1.3em;
 }
 
+time,
+main small {
+  color: var(--muted);
+}
+
 textarea {
   border: 1px solid var(--dark);
   background-color: var(--lesslight);
@@ -32,13 +41,22 @@ textarea {
   padding: 0.5em;
 }
 
+footer {
+  text-align: center;
+}
+
 nav a {
   margin-right: 8px;
 }
 
-footer {
-  text-align: center;
+*:focus {
+  outline: none;
+  box-shadow: none;
 }
+
+/*
+ *  Forms
+ */
 
 .form-group {
   margin-bottom: 1rem;
@@ -59,10 +77,13 @@ footer {
 #title,
 #slug,
 #content,
-#tags,
-.form-group textarea {
+#tags {
   width: 100%;
 }
+
+/*
+ *  Website Title
+ */
 
 .title,
 .title:hover {
@@ -73,37 +94,40 @@ footer {
   color: var(--dark);
 }
 
-ul.blog-posts {
+/*
+ * Post Listings
+ */
+
+ul.posts {
   list-style: none;
   padding: unset;
 }
-ul.blog-posts li {
+
+ul.posts li {
   display: flex;
   margin-bottom: 4px;
   flex-direction: column;
 }
-@media (min-width: 600px) {
-  ul.blog-posts li {
-    flex-direction: row;
-  }
-}
-ul.blog-posts li span {
+
+ul.posts li span {
   flex: 0 0 auto;
   min-width: 13ch;
 }
 
-.red {
-  color: #dd4b4c;
-}
+/*
+ *  Tables
+ */
 
 .table-container {
   overflow-x: auto;
 }
+
 table {
   width: 100%;
   table-layout: fixed;
   border: 1px solid var(--dark);
 }
+
 th,
 td {
   padding: 5px;
@@ -136,26 +160,22 @@ thead th:first-child {
 }
 
 /* Alternating row backgrounds */
-tbody tr:nth-child(odd) td {
-  background-color: var(--lesslight);
-}
-
-tbody tr:nth-child(even) td {
-  background-color: var(--light);
-}
-
-/* Explicitly set backgrounds for sticky first column */
+tbody tr:nth-child(odd) td,
 tbody tr:nth-child(odd) td:first-child {
   background-color: var(--lesslight);
 }
 
+tbody tr:nth-child(even) td,
 tbody tr:nth-child(even) td:first-child {
   background-color: var(--light);
 }
 
-*:focus {
-  outline: none;
-  box-shadow: none;
+/*
+ *  Misc
+ */
+
+.red {
+  color: #dd4b4c;
 }
 
 span.email b {
@@ -166,10 +186,7 @@ span.email b {
   margin-top: 2.2em;
 }
 
-time {
-  color: var(--muted);
-}
-
+/* Add NE arrow for outbound links */
 a[href^="http"]::after,
 a[href^="https://"]::after {
   content: " \2197";
@@ -177,13 +194,19 @@ a[href^="https://"]::after {
   vertical-align: super;
 }
 
-/* Exclude internal links (your domain) */
+/* Exclude internal links from NE arrow */
 a[href*="localhost"]::after {
   content: none;
 }
 
-main small {
-  color: var(--muted);
+/*
+ *  Responsive
+ */
+
+@media (min-width: 600px) {
+  ul.posts li {
+    flex-direction: row;
+  }
 }
 
 @media (prefers-color-scheme: dark) {

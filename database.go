@@ -84,7 +84,7 @@ func (app *App) runMigrations() error {
 	return nil
 }
 
-func (app *App) createDefaultUser() error {
+func (app *App) createInitialUser() error {
 	var count int
 	err := app.db.QueryRow("SELECT COUNT(*) FROM users").Scan(&count)
 	if err != nil {

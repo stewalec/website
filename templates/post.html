@@ -7,9 +7,9 @@
     <h2>{{.Post.Title}}</h2>
     <p>
         <small>
-            <time>{{.Post.CreatedAt.Format "January 2, 2006"}}</time>
+            <time>{{.Post.CreatedAt.Format "Jan 2, 2006"}}</time>
             {{ if ne (.Post.UpdatedAt.Format "2006-01-02") (.Post.CreatedAt.Format "2006-01-02") }}
-                &bull; Updated: {{.Post.UpdatedAt.Format "January 2, 2006"}}
+                &bull; Updated: {{.Post.UpdatedAt.Format "Jan 2, 2006"}}
             {{ end }}
             {{if .Post.Tags}}
                 &bull; {{range $i, $tag := .Post.Tags}}{{if $i}}, {{end}}<em><a href="/tags/{{.}}">{{$tag}}</a></em>{{end}}

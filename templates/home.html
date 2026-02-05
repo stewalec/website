@@ -7,7 +7,7 @@
 
 {{if .Articles}}
     {{range .Articles}}
-    <ul class="blog-posts">
+    <ul class="posts">
         <li>
             <span><time>{{.CreatedAt.Format "Jan 2, 2006"}}</time></span>
             <a href="/{{.PostType}}s/{{.Slug}}">{{.Title}}</a>
@@ -25,7 +25,7 @@
     {{range .Notes}}
     <dl class="breathe">
         <dt>
-            <a href="/{{.PostType}}s/{{.Slug}}"><time>{{.CreatedAt.Format "January 2, 2006"}}</time></a>
+            <a href="/{{.PostType}}s/{{.Slug}}"><time>{{.CreatedAt.Format "Jan 2, 2006"}}</time></a>
             {{ if $.IsAuthenticated }}<small style="margin-left:5px;">(<a href="/admin/posts/edit/{{.ID}}">edit</a>)</small>{{end}}
         </dt>
         <dd>{{.HTMLContent}}</dd>
