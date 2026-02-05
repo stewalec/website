@@ -34,6 +34,12 @@ main small {
   color: var(--muted);
 }
 
+h2 small {
+  margin-left: 2em;
+  text-transform: uppercase;
+  font-size: 0.7em;
+}
+
 textarea {
   border: 1px solid var(--dark);
   background-color: var(--lesslight);
