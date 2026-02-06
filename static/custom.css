@@ -60,6 +60,16 @@ nav a {
   box-shadow: none;
 }
 
+mark {
+  background-color: #fff3cd;
+  padding: 0 2px;
+}
+
+hr {
+  border: 0;
+  border-top: 1px dashed;
+}
+
 /*
  *  Forms
  */
@@ -85,6 +95,17 @@ nav a {
 #content,
 #tags {
   width: 100%;
+}
+
+.inline-form {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+input[type="search"] {
+  flex-grow: 1;
+  padding: 10px;
 }
 
 /*

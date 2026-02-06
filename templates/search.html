@@ -1,0 +1,61 @@
+{{template "base" .}}
+
+{{define "title"}}Search{{if .Query}}: {{.Query}}{{end}}{{end}}
+
+{{define "content"}}
+<h2>Search</h2>
+
+<form method="GET" action="/search" class="inline-form">
+    <input 
+        type="search" 
+        name="q" 
+        value="{{.Query}}" 
+        placeholder="Search this website..." 
+        autofocus>
+    <button type="submit">Search</button>
+</form>
+
+{{if .Query}}
+    {{if eq .Total 0}}
+        <p>No results found for "{{.Query}}"</p>
+        <p><small>Try different keywords or check your spelling.</small></p>
+    {{else}}
+        <p>Found {{.Total}} result{{if ne .Total 1}}s{{end}} for "{{.Query}}"</p>
+        
+        {{range .Results}}
+            {{if eq .Type "post"}}
+                {{if .Post.Title}}
+                <h3><a href="/{{.Post.PostType}}s/{{.Post.Slug}}">{{.Post.Title}}</a></h3>
+                <p>
+                    <small>
+                        <time>{{.Post.CreatedAt.Format "Jan 2, 2006"}}</time>
+                        &bull; {{.Post.PostType}}
+                    </small>
+                </p>
+                {{else}}
+                <p>
+                    <small>
+                        <a href="/{{.Post.PostType}}s/{{.Post.Slug}}"><time>{{.Post.CreatedAt.Format "Jan 2, 2006"}}</time></a>
+                        &bull; {{.Post.PostType}}
+                    </small>
+                </p>
+                {{end}}
+            {{else}}
+                <h3><a href="/{{.Page.Slug}}">{{.Page.Title}}</a></h3>
+                <p>
+                    <small>
+                        <time>{{.Page.CreatedAt.Format "Jan 2, 2006"}}</time>
+                        &bull; page
+                    </small>
+                </p>
+            {{end}}
+            
+            {{if .Snippet}}
+                <p>{{.Snippet}}</p>
+            {{end}}
+            
+            <hr>
+        {{end}}
+    {{end}}
+{{end}}
+{{end}}

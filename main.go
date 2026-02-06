@@ -137,8 +137,9 @@ func main() {
 	mux.HandleFunc("POST /admin/pages/delete", logHandler(app.requireAuth(app.handleDeletePage)))
 
 	// Other routes
-	mux.HandleFunc("GET /sitemap.xml", app.handleSitemap)
-	mux.HandleFunc("GET /robots.txt", app.handleRobotsTxt)
+	mux.HandleFunc("GET /sitemap.xml", logHandler(app.handleSitemap))
+	mux.HandleFunc("GET /robots.txt", logHandler(app.handleRobotsTxt))
+	mux.HandleFunc("GET /search", logHandler(app.handleSearch))
 
 	srv := &http.Server{
 		Addr:         ":8080",
@@ -148,7 +149,7 @@ func main() {
 		WriteTimeout: 10 * time.Second,
 	}
 
-	log.Printf("Server starting on http://localhost:%s\n", srv.Addr)
+	log.Printf("Server starting on http://localhost%s\n", srv.Addr)
 	log.Fatal(srv.ListenAndServe())
 }
 
@@ -222,7 +223,13 @@ func logHandler(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		next.ServeHTTP(w, r)
-		log.Printf("%s %s %s %v", r.Method, r.URL.Path, r.RemoteAddr, time.Since(start))
+
+		query := r.URL.Query().Get("q")
+		if query != "" {
+			query = "?q=" + query
+		}
+
+		log.Printf("%s %s %s %v", r.Method, r.URL.Path+query, r.RemoteAddr, time.Since(start))
 	})
 }
 
