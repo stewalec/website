@@ -136,6 +136,10 @@ func main() {
 	mux.HandleFunc("POST /admin/pages/edit/{id}", logHandler(app.requireAuth(app.handleEditPage)))
 	mux.HandleFunc("POST /admin/pages/delete", logHandler(app.requireAuth(app.handleDeletePage)))
 
+	// Other routes
+	mux.HandleFunc("GET /sitemap.xml", app.handleSitemap)
+	mux.HandleFunc("GET /robots.txt", app.handleRobotsTxt)
+
 	srv := &http.Server{
 		Addr:         ":8080",
 		Handler:      mux,

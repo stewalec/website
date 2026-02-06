@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex, nofollow">
     <title>{{block "title" .}}{{end}} &mdash; Alec Stewart</title>
     <link rel="stylesheet" href="/static/neat.css" type="text/css">
     <link rel="stylesheet" href="/static/custom.css" type="text/css">
     <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.xml">
     {{ if .CanonicalURL }}<link rel="canonical" href="{{.CanonicalURL}}" />{{ end }}
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
 </head>
 <body>
     <header>

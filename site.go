@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"encoding/xml"
 	"fmt"
 	"net/http"
 	"strings"
@@ -290,4 +291,46 @@ func (app *App) handleNow(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+func (app *App) handleSitemap(w http.ResponseWriter, r *http.Request) {
+	// Determine base URL
+	scheme := "http"
+	if r.TLS != nil {
+		scheme = "https"
+	}
+	baseURL := scheme + "://" + r.Host
+
+	sitemap, err := app.generateSitemap(baseURL)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/xml; charset=utf-8")
+
+	output, err := xml.MarshalIndent(sitemap, "", "  ")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write([]byte(xml.Header))
+	w.Write(output)
+}
+
+func (app *App) handleRobotsTxt(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/plain")
+
+	scheme := "http"
+	if r.TLS != nil {
+		scheme = "https"
+	}
+
+	robotsTxt := `User-agent: *
+Allow: /
+
+Sitemap: ` + scheme + `://` + r.Host + `/sitemap.xml`
+
+	w.Write([]byte(robotsTxt))
 }
