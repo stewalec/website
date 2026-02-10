@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"crypto/rand"
 	"database/sql"
 	"embed"
@@ -9,6 +10,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -72,6 +74,10 @@ type Tag struct {
 func main() {
 	app := &App{}
 
+	if err := app.loadEnv(".env"); err != nil {
+		log.Fatal("Failed to load .env file:", err)
+	}
+
 	if err := app.initDB(); err != nil {
 		log.Fatal("Failed to initialize database:", err)
 	}
@@ -123,6 +129,7 @@ func main() {
 	mux.HandleFunc("POST /login", logHandler(app.handleLogin))
 	mux.HandleFunc("GET /logout", logHandler(app.handleLogout))
 	mux.HandleFunc("GET /admin", logHandler(app.requireAuth(app.handleAdmin)))
+	mux.HandleFunc("POST /upload", logHandler(app.requireAuth(app.handleUpload)))
 	mux.HandleFunc("GET /admin/posts", logHandler(app.requireAuth(app.handleAdminPosts)))
 	mux.HandleFunc("GET /admin/posts/new", logHandler(app.requireAuth(app.handleNewPost)))
 	mux.HandleFunc("POST /admin/posts/new", logHandler(app.requireAuth(app.handleNewPost)))
@@ -275,4 +282,38 @@ func (app *App) getPostTags(postID int) []string {
 
 func titleCase(str string) string {
 	return strings.ToUpper(string(str[0])) + string(str[1:])
+}
+
+func (app *App) loadEnv(filename string) error {
+	file, err := os.Open(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+
+		// Skip empty lines and comments
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+
+		// Split on first '=' only
+		parts := strings.SplitN(line, "=", 2)
+		if len(parts) != 2 {
+			continue
+		}
+
+		key := strings.TrimSpace(parts[0])
+		value := strings.TrimSpace(parts[1])
+
+		// Remove quotes if present
+		value = strings.Trim(value, `"'`)
+
+		os.Setenv(key, value)
+	}
+
+	return scanner.Err()
 }
