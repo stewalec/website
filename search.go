@@ -27,7 +27,7 @@ func (app *App) handleSearch(w http.ResponseWriter, r *http.Request) {
 		}
 		err := app.templates["search.html"].ExecuteTemplate(w, "base", data)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			app.httpError(w, err, http.StatusInternalServerError)
 			return
 		}
 		return
@@ -127,7 +127,7 @@ func (app *App) handleSearch(w http.ResponseWriter, r *http.Request) {
 
 	err = app.templates["search.html"].ExecuteTemplate(w, "base", data)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 }

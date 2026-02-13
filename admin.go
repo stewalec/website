@@ -16,7 +16,7 @@ func (app *App) handleLogin(w http.ResponseWriter, r *http.Request) {
 		}
 		err := app.templates["login.html"].ExecuteTemplate(w, "base", data)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			app.httpError(w, err, http.StatusInternalServerError)
 			return
 		}
 		return
@@ -42,7 +42,7 @@ func (app *App) handleLogin(w http.ResponseWriter, r *http.Request) {
 
 		err = app.templates["login.html"].ExecuteTemplate(w, "base", data)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			app.httpError(w, err, http.StatusInternalServerError)
 			return
 		}
 		return
@@ -85,7 +85,7 @@ func (app *App) handleAdmin(w http.ResponseWriter, r *http.Request) {
 
 	err := app.templates["admin.html"].ExecuteTemplate(w, "admin_base", data)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 }
@@ -97,7 +97,7 @@ func (app *App) handleAdminPosts(w http.ResponseWriter, r *http.Request) {
 		ORDER BY created_at DESC
 	`)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 	defer rows.Close()
@@ -119,7 +119,7 @@ func (app *App) handleAdminPosts(w http.ResponseWriter, r *http.Request) {
 
 	err = app.templates["admin_posts.html"].ExecuteTemplate(w, "admin_base", data)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 }
@@ -132,7 +132,7 @@ func (app *App) handleNewPost(w http.ResponseWriter, r *http.Request) {
 
 		err := app.templates["admin_post_form.html"].ExecuteTemplate(w, "admin_base", data)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			app.httpError(w, err, http.StatusInternalServerError)
 			return
 		}
 		return
@@ -155,7 +155,7 @@ func (app *App) handleNewPost(w http.ResponseWriter, r *http.Request) {
 		VALUES (?, ?, ?, ?, ?)
 	`, title, slug, content, postType, published)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -178,7 +178,7 @@ func (app *App) handleEditPost(w http.ResponseWriter, r *http.Request) {
 			WHERE id = ?
 		`, id).Scan(&post.ID, &post.Title, &post.Slug, &post.Content, &post.PostType, &post.Published)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusNotFound)
+			app.httpError(w, err, http.StatusNotFound)
 			return
 		}
 
@@ -193,7 +193,7 @@ func (app *App) handleEditPost(w http.ResponseWriter, r *http.Request) {
 
 		err = app.templates["admin_post_form.html"].ExecuteTemplate(w, "admin_base", data)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			app.httpError(w, err, http.StatusInternalServerError)
 			return
 		}
 		return
@@ -217,7 +217,7 @@ func (app *App) handleEditPost(w http.ResponseWriter, r *http.Request) {
 		WHERE id = ?
 	`, title, slug, content, postType, published, id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -242,7 +242,7 @@ func (app *App) handleDeletePost(w http.ResponseWriter, r *http.Request) {
 
 	_, err := app.db.Exec("DELETE FROM posts WHERE id = ?", id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -256,7 +256,7 @@ func (app *App) handleAdminPages(w http.ResponseWriter, r *http.Request) {
 		ORDER BY created_at DESC
 	`)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 	defer rows.Close()
@@ -277,7 +277,7 @@ func (app *App) handleAdminPages(w http.ResponseWriter, r *http.Request) {
 
 	err = app.templates["admin_pages.html"].ExecuteTemplate(w, "admin_base", data)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 }
@@ -290,7 +290,7 @@ func (app *App) handleNewPage(w http.ResponseWriter, r *http.Request) {
 
 		err := app.templates["admin_page_form.html"].ExecuteTemplate(w, "admin_base", data)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			app.httpError(w, err, http.StatusInternalServerError)
 			return
 		}
 		return
@@ -311,7 +311,7 @@ func (app *App) handleNewPage(w http.ResponseWriter, r *http.Request) {
 		VALUES (?, ?, ?, ?)
 	`, title, slug, content, published)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -330,7 +330,7 @@ func (app *App) handleEditPage(w http.ResponseWriter, r *http.Request) {
 			WHERE id = ?
 		`, id).Scan(&page.ID, &page.Title, &page.Slug, &page.Content, &page.Published)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusNotFound)
+			app.httpError(w, err, http.StatusNotFound)
 			return
 		}
 
@@ -341,7 +341,7 @@ func (app *App) handleEditPage(w http.ResponseWriter, r *http.Request) {
 
 		err = app.templates["admin_page_form.html"].ExecuteTemplate(w, "admin_base", data)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			app.httpError(w, err, http.StatusInternalServerError)
 			return
 		}
 		return
@@ -363,7 +363,7 @@ func (app *App) handleEditPage(w http.ResponseWriter, r *http.Request) {
 		WHERE id = ?
 	`, title, slug, content, published, id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -386,7 +386,7 @@ func (app *App) handleDeletePage(w http.ResponseWriter, r *http.Request) {
 
 	_, err := app.db.Exec("DELETE FROM pages WHERE id = ?", id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 

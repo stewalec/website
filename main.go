@@ -27,7 +27,7 @@ var templateFS embed.FS
 //go:embed static/*
 var staticFS embed.FS
 
-var baseUrl = "http://localhost:8080"
+var baseURL = os.Getenv("BASE_URL")
 
 type App struct {
 	db        *sql.DB
@@ -242,6 +242,11 @@ func logHandler(next http.HandlerFunc) http.HandlerFunc {
 	})
 }
 
+func (app *App) httpError(w http.ResponseWriter, err error, code int) {
+	log.Printf("ERROR: %v", err)
+	http.Error(w, http.StatusText(code), code)
+}
+
 func (app *App) validateCSRF(r *http.Request) bool {
 	token := r.FormValue("csrf_token")
 	return token == app.csrfToken
@@ -283,7 +288,10 @@ func (app *App) getPostTags(postID int) []string {
 }
 
 func titleCase(str string) string {
-	return strings.ToUpper(string(str[0])) + string(str[1:])
+	if str == "" {
+		return ""
+	}
+	return strings.ToUpper(string(str[0])) + str[1:]
 }
 
 func (app *App) loadEnv(filename string) error {

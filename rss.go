@@ -96,10 +96,10 @@ func (app *App) generateRSSFeed(postType, baseURL, title, description string) (*
 }
 
 func (app *App) handleRSSFeed(w http.ResponseWriter, r *http.Request) {
-	feed, err := app.generateRSSFeed("", baseUrl, "Alec Stewart - Everything Feed",
+	feed, err := app.generateRSSFeed("", baseURL, "Alec Stewart - Everything Feed",
 		"Articles, notes, links, photos... all my recent content")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -107,7 +107,7 @@ func (app *App) handleRSSFeed(w http.ResponseWriter, r *http.Request) {
 
 	output, err := xml.MarshalIndent(feed, "", "  ")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -120,9 +120,9 @@ func (app *App) handlePostTypeRSS(postType string) http.HandlerFunc {
 		title := "Alec Stewart - " + titleCase(postType) + "s Feed"
 		description := "All my recent " + postType + "s"
 
-		feed, err := app.generateRSSFeed(postType, baseUrl, title, description)
+		feed, err := app.generateRSSFeed(postType, baseURL, title, description)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			app.httpError(w, err, http.StatusInternalServerError)
 			return
 		}
 
@@ -130,7 +130,7 @@ func (app *App) handlePostTypeRSS(postType string) http.HandlerFunc {
 
 		output, err := xml.MarshalIndent(feed, "", "  ")
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			app.httpError(w, err, http.StatusInternalServerError)
 			return
 		}
 

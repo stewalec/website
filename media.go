@@ -65,7 +65,7 @@ func (app *App) handleAdminMedia(w http.ResponseWriter, r *http.Request) {
 	client := NewBunnyClient()
 	files, err := client.GetAllFilesRecursively("")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -108,7 +108,7 @@ func (app *App) handleAdminMedia(w http.ResponseWriter, r *http.Request) {
 
 	err = app.templates["admin_media.html"].ExecuteTemplate(w, "admin_base", data)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 }
@@ -121,7 +121,7 @@ func (app *App) handleNewMedia(w http.ResponseWriter, r *http.Request) {
 
 		err := app.templates["admin_media_form.html"].ExecuteTemplate(w, "admin_base", data)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			app.httpError(w, err, http.StatusInternalServerError)
 			return
 		}
 		return
@@ -135,16 +135,14 @@ func (app *App) handleNewMedia(w http.ResponseWriter, r *http.Request) {
 	// Parse multipart form
 	err := r.ParseMultipartForm(MAX_UPLOAD_SIZE)
 	if err != nil {
-		log.Printf("Upload error: %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 
 	// Get the file from the form
 	file, header, err := r.FormFile("image")
 	if err != nil {
-		log.Printf("Upload error: %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 	defer file.Close()
@@ -155,8 +153,7 @@ func (app *App) handleNewMedia(w http.ResponseWriter, r *http.Request) {
 	// Upload to Bunny.net
 	_, err = uploadToBunny(bunnyClient, uniqueFilename, file)
 	if err != nil {
-		log.Printf("Upload error: %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 

@@ -33,7 +33,7 @@ func (app *App) handleHome(w http.ResponseWriter, r *http.Request) {
 		ORDER BY post_type, rn
 	`)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 	defer rows.Close()
@@ -64,7 +64,7 @@ func (app *App) handleHome(w http.ResponseWriter, r *http.Request) {
 
 	err = app.templates["home.html"].ExecuteTemplate(w, "base", data)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 }
@@ -84,7 +84,7 @@ func (app *App) handlePage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -97,7 +97,7 @@ func (app *App) handlePage(w http.ResponseWriter, r *http.Request) {
 
 	err = app.templates["page.html"].ExecuteTemplate(w, "base", data)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 }
@@ -119,7 +119,7 @@ func (app *App) handlePosts(postType string) http.HandlerFunc {
 			return
 		}
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			app.httpError(w, err, http.StatusInternalServerError)
 			return
 		}
 
@@ -133,7 +133,7 @@ func (app *App) handlePosts(postType string) http.HandlerFunc {
 
 		err = app.templates["post.html"].ExecuteTemplate(w, "base", data)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			app.httpError(w, err, http.StatusInternalServerError)
 			return
 		}
 	}
@@ -148,7 +148,7 @@ func (app *App) handlePostsList(postType string) http.HandlerFunc {
 			ORDER BY created_at DESC
 		`, postType)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			app.httpError(w, err, http.StatusInternalServerError)
 			return
 		}
 		defer rows.Close()
@@ -172,7 +172,7 @@ func (app *App) handlePostsList(postType string) http.HandlerFunc {
 
 		err = app.templates["post_list.html"].ExecuteTemplate(w, "base", data)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			app.httpError(w, err, http.StatusInternalServerError)
 			return
 		}
 	}
@@ -187,7 +187,7 @@ func (app *App) handleTags(w http.ResponseWriter, r *http.Request) {
 		ORDER BY t.name
 	`)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 	defer rows.Close()
@@ -210,7 +210,7 @@ func (app *App) handleTags(w http.ResponseWriter, r *http.Request) {
 
 	err = app.templates["tags.html"].ExecuteTemplate(w, "base", data)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 }
@@ -227,7 +227,7 @@ func (app *App) handleTagPosts(w http.ResponseWriter, r *http.Request) {
 		ORDER BY p.created_at DESC
 	`, tagName)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 	defer rows.Close()
@@ -251,7 +251,7 @@ func (app *App) handleTagPosts(w http.ResponseWriter, r *http.Request) {
 
 	err = app.templates["tag_posts.html"].ExecuteTemplate(w, "base", data)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 }
@@ -272,13 +272,13 @@ func (app *App) handleNow(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 
 	now.HTMLContent = app.markdownToHTML(now.Content)
 
-	canonicalURL := fmt.Sprintf("%s/notes/%s", baseUrl, now.Slug)
+	canonicalURL := fmt.Sprintf("%s/notes/%s", baseURL, now.Slug)
 
 	data := map[string]any{
 		"Page":            now,
@@ -288,7 +288,7 @@ func (app *App) handleNow(w http.ResponseWriter, r *http.Request) {
 
 	err = app.templates["now.html"].ExecuteTemplate(w, "base", data)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 }
@@ -303,7 +303,7 @@ func (app *App) handleSitemap(w http.ResponseWriter, r *http.Request) {
 
 	sitemap, err := app.generateSitemap(baseURL)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -311,7 +311,7 @@ func (app *App) handleSitemap(w http.ResponseWriter, r *http.Request) {
 
 	output, err := xml.MarshalIndent(sitemap, "", "  ")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		app.httpError(w, err, http.StatusInternalServerError)
 		return
 	}
 
