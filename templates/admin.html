@@ -11,24 +11,8 @@
         <p>
             <a href="/admin/posts/new"><button>New Post</button></a>
             <a href="/admin/pages/new"><button>New Page</button></a>
+            <a href="/admin/media/new"><button>Upload</button></a>
         </p>
-        <form class="form-group" action="/upload" method="POST" enctype="multipart/form-data">
-            <input type="file" name="image" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp,image/bmp" required>
-            <button type="submit">Upload</button>
-        </form>
-
-        {{if .Error}}
-        <p class="red">{{.Message}}</p>
-        {{end}}
-
-        {{if .Success}}
-        <p>{{.Message}}</p>
-        <ul>
-            <li>Filename: {{.Filename}}</li>
-            <li>File Size: {{.FileSize}}</li>
-            <li>CDN URL: <a href="{{.URL}}" target="_blank" rel="noopener noreferrer">{{.URL}}</a></li>
-        </ul>
-        {{end}}
     </div>
     <div>
         <h3>Statistics</h3>

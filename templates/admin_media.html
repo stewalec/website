@@ -1,0 +1,47 @@
+{{template "admin_base" .}}
+
+{{define "admin_title"}}Manage Media{{end}}
+
+{{define "admin_content"}}
+<h2>Manage Media</h2>
+
+<p>
+    <a href="/admin/media/new"><button>Upload</button></a>
+</p>
+
+<ul>
+    <li>Total Items: {{.TotalItems}}</li>
+    <li>Directories: {{.TotalDirectories}}</li> 
+    <li>Files: {{.TotalFiles}} </li>
+    <li>Total Size: {{.TotalSize}}</li>
+</ul>
+
+{{if .Files}}
+<div class="table-container">
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Size</th>
+            <th>Last Modified</th>
+            <th>Created</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{range .Files}}
+        <tr>
+            <td><a href="https://static.alecstewart.com/{{slice .Path 13}}{{.ObjectName}}" target="_blank" rel="noopener norefferer">{{slice .Path 13}}{{.ObjectName}}</a></td>
+            <td>{{if .IsDirectory}}Directory{{else}}File{{end}}</td>
+            <td>{{if not .IsDirectory}}{{.FormattedSize}}{{else}}-{{end}}</td>
+            <td>{{.LastChanged}}</td>
+            <td>{{.DateCreated}}</td>
+        </tr>
+        {{end}}
+    </tbody>
+</table>
+</div>
+{{else}}
+<p>No media yet. <a href="/admin/media/new">Upload your first file</a>.</p>
+{{end}}
+{{end}}
