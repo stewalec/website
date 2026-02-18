@@ -132,6 +132,7 @@ func main() {
 	mux.HandleFunc("GET /admin/media", logHandler(app.requireAuth(app.handleAdminMedia)))
 	mux.HandleFunc("GET /admin/media/new", logHandler(app.requireAuth(app.handleNewMedia)))
 	mux.HandleFunc("POST /admin/media/new", logHandler(app.requireAuth(app.handleNewMedia)))
+	mux.HandleFunc("POST /admin/media/delete", logHandler(app.requireAuth(app.handleDeleteMedia)))
 	mux.HandleFunc("GET /admin/posts", logHandler(app.requireAuth(app.handleAdminPosts)))
 	mux.HandleFunc("GET /admin/posts/new", logHandler(app.requireAuth(app.handleNewPost)))
 	mux.HandleFunc("POST /admin/posts/new", logHandler(app.requireAuth(app.handleNewPost)))
