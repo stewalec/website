@@ -323,3 +323,63 @@ func (bc *BunnyClient) GetAllFilesRecursively(startPath string) ([]BunnyFile, er
 
 	return allFiles, nil
 }
+
+func (app *App) handleDeleteMedia(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	if !app.validateCSRF(r) {
+		http.Error(w, "Invalid CSRF token", http.StatusForbidden)
+		return
+	}
+
+	bc := NewBunnyClient()
+
+	path := r.FormValue("path")
+	filename := r.FormValue("filename")
+
+	if path == "" {
+		filename = filename + "/"
+	}
+
+	err := bc.DeleteFile(path, filename)
+	if err != nil {
+		app.httpError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/admin/media", http.StatusSeeOther)
+}
+
+// ListFiles retrieves files from a specific path in the storage zone
+func (bc *BunnyClient) DeleteFile(path string, filename string) error {
+	// Construct the URL
+	url := fmt.Sprintf("https://%s.storage.bunnycdn.com/%s/%s%s", bc.config.StorageRegion, bc.config.StorageZone, path, filename)
+
+	// Create the request
+	req, err := http.NewRequest("DELETE", url, nil)
+	if err != nil {
+		return fmt.Errorf("failed to create request: %w", err)
+	}
+
+	// Add the AccessKey header
+	req.Header.Add("AccessKey", bc.config.AccessKey)
+	req.Header.Add("Accept", "application/json")
+
+	// Execute the request
+	resp, err := bc.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("failed to execute request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Check response status
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("API returned status %d: %s", resp.StatusCode, string(body))
+	}
+
+	return nil
+}

@@ -5,10 +5,7 @@
 {{define "admin_content"}}
 <h2>Manage Media</h2>
 
-<p>
-    <a href="/admin/media/new"><button>Upload</button></a>
-</p>
-
+{{if .Files}}
 <ul>
     <li>Total Items: {{.TotalItems}}</li>
     <li>Directories: {{.TotalDirectories}}</li> 
@@ -16,7 +13,10 @@
     <li>Total Size: {{.TotalSize}}</li>
 </ul>
 
-{{if .Files}}
+<p>
+    <a href="/admin/media/new"><button>Upload</button></a>
+</p>
+
 <div class="table-container">
 <table>
     <thead>
@@ -26,6 +26,7 @@
             <th>Size</th>
             <th>Last Modified</th>
             <th>Created</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -36,6 +37,14 @@
             <td>{{if not .IsDirectory}}{{.FormattedSize}}{{else}}-{{end}}</td>
             <td>{{.LastChanged}}</td>
             <td>{{.DateCreated}}</td>
+            <td>
+                <form method="POST" action="/admin/media/delete" style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="{{$.CSRFToken}}">
+                    <input type="hidden" name="path" value="{{slice .Path 13}}">
+                    <input type="hidden" name="filename" value="{{.ObjectName}}">
+                    <button type="submit" onclick="return confirm('Delete this file?')">Delete</button>
+                </form>
+            </td>
         </tr>
         {{end}}
     </tbody>
