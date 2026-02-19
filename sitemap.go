@@ -94,7 +94,7 @@ func (app *App) generateSitemap(baseURL string) (*URLSet, error) {
 	}
 
 	// Add post type listing pages
-	postTypes := []string{"articles", "notes", "links", "photos"}
+	postTypes := []string{"essays", "notes", "links", "photos"}
 	for _, pt := range postTypes {
 		urls = append(urls, URL{
 			Loc:        baseURL + "/" + pt,

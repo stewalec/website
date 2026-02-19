@@ -5,10 +5,10 @@
 {{define "content"}}
 <p>Hi, I'm Alec.</p>
 
-<h2 class="breathe">Recent Articles <small><a href="/articles">See all</a></small></h2>
+<h2 class="breathe">Recent Essays <small><a href="/essays">See all</a></small></h2>
 
-{{if .Articles}}
-    {{range .Articles}}
+{{if .Essays}}
+    {{range .Essays}}
     <ul class="posts">
         <li>
             <span><time>{{.CreatedAt.Format "Jan 2, 2006"}}</time></span>
@@ -18,7 +18,7 @@
     </ul>
     {{end}}
 {{else}}
-    <p>No articles yet.</p>
+    <p>No essays yet.</p>
 {{end}}
 
 <h2 class="breathe">Recent Notes <small><a href="/notes">See all</a></small></h2>
