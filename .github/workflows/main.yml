@@ -1,5 +1,8 @@
 name: Mirror to Codeberg
 
+env:
+  SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+
 on:
   push:
     branches:
@@ -10,6 +13,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Setup SSH with a passphrase
+        env:
+          SSH_PASSPHRASE: ${{secrets.SSH_PASSPHRASE}}
+          SSH_PRIVATE_KEY: ${{secrets.GIT_SSH_PRIVATE_KEY}}
+        run: |
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+          echo "echo $SSH_PASSPHRASE" > ~/.ssh_askpass && chmod +x ~/.ssh_askpass
+          echo "$SSH_PRIVATE_KEY" | tr -d '\r' | DISPLAY=None SSH_ASKPASS=~/.ssh_askpass ssh-add - >/dev/null
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
