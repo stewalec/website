@@ -21,7 +21,7 @@
     <div class="form-group">
         <label for="post_type"><span class="red">*</span>Post Type:</label>
         <select id="post_type" name="post_type" required>
-            <option value="article" {{if .Post}}{{if eq .Post.PostType "article"}}selected{{end}}{{end}}>Article</option>
+            <option value="essay" {{if .Post}}{{if eq .Post.PostType "essay"}}selected{{end}}{{end}}>Essay</option>
             <option value="note" {{if .Post}}{{if eq .Post.PostType "note"}}selected{{end}}{{end}}>Note</option>
             <option value="link" {{if .Post}}{{if eq .Post.PostType "link"}}selected{{end}}{{end}}>Link</option>
             <option value="photo" {{if .Post}}{{if eq .Post.PostType "photo"}}selected{{end}}{{end}}>Photo</option>

@@ -97,7 +97,7 @@ func (app *App) generateRSSFeed(postType, baseURL, title, description string) (*
 
 func (app *App) handleRSSFeed(w http.ResponseWriter, r *http.Request) {
 	feed, err := app.generateRSSFeed("", baseURL, "Alec Stewart - Everything Feed",
-		"Articles, notes, links, photos... all my recent content")
+		"Essays, notes, links, photos... all my recent content")
 	if err != nil {
 		app.httpError(w, err, http.StatusInternalServerError)
 		return

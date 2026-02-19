@@ -105,8 +105,8 @@ func main() {
 
 	// Public routes
 	mux.HandleFunc("GET /", logHandler(app.handleHome))
-	mux.HandleFunc("GET /articles", logHandler(app.handlePostsList("article")))
-	mux.HandleFunc("GET /articles/{slug}", logHandler(app.handlePosts("article")))
+	mux.HandleFunc("GET /essays", logHandler(app.handlePostsList("essay")))
+	mux.HandleFunc("GET /essays/{slug}", logHandler(app.handlePosts("essay")))
 	mux.HandleFunc("GET /notes", logHandler(app.handlePostsList("note")))
 	mux.HandleFunc("GET /notes/{slug}", logHandler(app.handlePosts("note")))
 	mux.HandleFunc("GET /links", logHandler(app.handlePostsList("link")))
@@ -119,7 +119,7 @@ func main() {
 
 	// RSS feeds
 	mux.HandleFunc("GET /feed.xml", logHandler(app.handleRSSFeed))
-	mux.HandleFunc("GET /articles/feed.xml", logHandler(app.handlePostTypeRSS("article")))
+	mux.HandleFunc("GET /essays/feed.xml", logHandler(app.handlePostTypeRSS("essay")))
 	mux.HandleFunc("GET /notes/feed.xml", logHandler(app.handlePostTypeRSS("note")))
 	mux.HandleFunc("GET /links/feed.xml", logHandler(app.handlePostTypeRSS("link")))
 	mux.HandleFunc("GET /photos/feed.xml", logHandler(app.handlePostTypeRSS("photo")))

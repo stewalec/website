@@ -25,7 +25,7 @@ func (app *App) handleHome(w http.ResponseWriter, r *http.Request) {
 				created_at,
 				ROW_NUMBER() OVER (PARTITION BY post_type ORDER BY created_at DESC) as rn
 			FROM posts
-			WHERE post_type IN ('article', 'note')
+			WHERE post_type IN ('essay', 'note')
 		)
 		SELECT id, title, slug, content, post_type, created_at 
 		FROM ranked_posts
@@ -38,7 +38,7 @@ func (app *App) handleHome(w http.ResponseWriter, r *http.Request) {
 	}
 	defer rows.Close()
 
-	var articles []Post
+	var essays []Post
 	var notes []Post
 	for rows.Next() {
 		var p Post
@@ -49,15 +49,15 @@ func (app *App) handleHome(w http.ResponseWriter, r *http.Request) {
 		p.Tags = app.getPostTags(p.ID)
 
 		switch p.PostType {
-		case "article":
-			articles = append(articles, p)
+		case "essay":
+			essays = append(essays, p)
 		case "note":
 			notes = append(notes, p)
 		}
 	}
 
 	data := map[string]any{
-		"Articles":        articles,
+		"Essays":          essays,
 		"Notes":           notes,
 		"IsAuthenticated": app.isAuthenticated(r),
 	}
