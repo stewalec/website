@@ -16,5 +16,5 @@ jobs:
           fetch-depth: 0
       - name: Mirror code
         run: |
-          git remote add codeberg https://stewalec:${{ secrets.CODEBERG_TOKEN }}@codeberg.org/${{ github.repository }}.git
-          echo "git push --mirror codeberg"
+          git remote add codeberg "https://stewalec:${{ secrets.CODEBERG_TOKEN }}@codeberg.org/${{ github.repository }}.git"
+          git push --mirror codeberg
